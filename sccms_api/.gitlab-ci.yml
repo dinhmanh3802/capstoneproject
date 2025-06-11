@@ -1,0 +1,80 @@
+stages:
+  - build
+  - test
+  - publish
+  # - deploy
+
+variables:
+  DOTNET_VERSION: "8.0.x"
+  ARTIFACT_PATH: "${CI_PROJECT_DIR}/publish"
+  SOLUTION_PATH: "SCCMS.sln"
+  PROJECT_PATH: "SCCMS.API/SCCMS.API.csproj"
+  TEST_PROJECT_PATH: "SCCMS.Test/SCCMS.Test.csproj"
+
+build:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - dotnet build $PROJECT_PATH -c Release
+
+test:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - dotnet tool install -g trx2junit
+    - dotnet test $TEST_PROJECT_PATH --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+  
+  after_script:
+    - trx2junit SCCMS.Test/TestResults/test-results.trx
+
+  artifacts:
+    reports:
+      junit: SCCMS.Test/TestResults/test-results.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: SCCMS.Test/TestResults/coverage.cobertura.xml
+    paths:
+      - SCCMS.Test/TestResults/test-results.trx
+      - SCCMS.Test/TestResults/coverage.cobertura.xml
+    expire_in: 1 week
+
+publish:
+  stage: publish
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - apt-get update && apt-get install -y zip
+    # Publish chính xác cho project API
+    - dotnet publish $PROJECT_PATH 
+        -c Release 
+        -o $CI_PROJECT_DIR/publish 
+        --self-contained true 
+        -r linux-x64
+    
+    # Tạo zip artifact
+    - cd $CI_PROJECT_DIR/publish
+    - zip -r ../publish.zip .
+  artifacts:
+    paths:
+      - publish.zip
+    expire_in: 1 week
+  dependencies:
+    - test
+
+# deploy_production:
+#   stage: deploy
+#   image: mcr.microsoft.com/azure-cli
+#   script:
+#     - az login 
+#         --service-principal 
+#         -u $AZURE_CLIENT_ID 
+#         -p $AZURE_CLIENT_SECRET 
+#         --tenant $AZURE_TENANT_ID
+    
+#     - az webapp deploy 
+#         --resource-group coloan 
+#         --name $APP_SERVICE_NAME 
+#         --src-path publish.zip
+#   only:
+#     - main
+#   dependencies:
+#     - publish
