@@ -1,0 +1,53 @@
+# stages:
+#     - build
+#     - deploy
+
+# # Stage Build: Xây dựng ứng dụng React với Vite
+# build_job:
+#     image: node:18
+#     stage: build
+#     cache:
+#         paths:
+#             - node_modules/
+#     script:
+#         - npm install
+#         - npm run build
+#         - ls -la dist/
+#     artifacts:
+#         paths:
+#             - dist/
+#         expire_in: 1 hour
+
+# # Stage Deploy: Triển khai lên Azure App Service
+# deploy_job:
+#     image: node:18
+#     stage: deploy
+#     dependencies:
+#         - build_job
+#     before_script:
+#         # Cài đặt các công cụ cần thiết
+#         - apt-get update && apt-get install -y wget unzip jq zip curl gnupg lsb-release
+
+#         # Thêm khóa GPG của Microsoft và repository Azure CLI
+#         - curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+#         - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/azure-cli.list
+#         - apt-get update && apt-get install -y azure-cli
+
+#         # Lưu nội dung của AZURE_CREDENTIALS vào file JSON
+#         - echo "$AZURE_CREDENTIALS" > azure_credentials.json
+
+#         # Kiểm tra JSON (tuỳ chọn)
+#         - jq . azure_credentials.json
+
+#         # Đăng nhập vào Azure bằng Service Principal
+#         - az login --service-principal --username "$(jq -r .clientId azure_credentials.json)" --password "$(jq -r .clientSecret azure_credentials.json)" --tenant "$(jq -r .tenantId azure_credentials.json)"
+
+#     script:
+#         # Đóng gói thư mục dist thành file zip ở root
+#         - cd dist && zip -r ../build.zip . && cd ..
+#         - ls -la build.zip
+#         # Triển khai ứng dụng lên Azure App Service bằng lệnh mới
+#         - az webapp deploy --resource-group chuacoloan_group --name chuacoloan --src-path build.zip --type zip
+#     only:
+#         - main
+# #

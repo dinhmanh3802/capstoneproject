@@ -1,0 +1,25 @@
+/* Header của bảng */
+.table thead th {
+    background-color: #f8f9fa; /* Màu xám nhạt */
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    height: 50px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Các ô chứa Tên phòng */
+.table tbody td.room-name {
+    background-color: #f8f9fa; /* Màu xám nhạt */
+    color: #212529; /* Màu đen */
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+/* Các ô chứa Ca trực */
+.table tbody td.shift-cell {
+    background-color: #ffffff; /* Màu trắng */
+    color: #212529; /* Màu đen */
+    vertical-align: top;
+    width: 400px;
+}

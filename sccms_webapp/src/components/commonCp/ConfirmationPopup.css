@@ -1,0 +1,123 @@
+/* Overlay - Nền đen mờ phía sau */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: flex-start; /* Đưa popup về phía trên */
+    justify-content: center;
+    padding-top: 100px; /* Dư ra một chút từ phía trên */
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Wrapper của popup */
+.popup-wrapper {
+    background: white;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 3px 5px rgba(0, 0, 0, 0.1);
+    animation: slideInFromTop 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* Header của popup */
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px; /* Giảm padding để chiều cao hẹp hơn */
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Tiêu đề của popup */
+.popup-title {
+    margin-top: 3%;
+    font-size: 1.3rem; /* Giảm font size */
+    font-weight: bold;
+    color: #333;
+}
+
+/* Nút đóng - dấu X */
+.close-button {
+    background: none;
+    border: none;
+    padding: 2px;
+    font-size: 1.75rem; /* Tăng kích thước */
+    color: #dc3545; /* Làm nổi bật với màu đỏ */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-button:hover {
+    color: #ff6b6b; /* Sáng hơn khi hover */
+}
+
+.close-button:active {
+    transform: scale(0.9); /* Thu nhỏ nhẹ khi nhấn */
+}
+
+/* Body của popup */
+.popup-body {
+    padding: 20px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #555;
+}
+
+/* Footer của popup */
+.popup-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+    border-top: 1px solid #e0e0e0;
+    gap: 12px;
+}
+
+/* Nút hành động */
+.btn {
+    transition: all 0.2s;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #d0d0d0;
+}
+
+.btn-secondary:hover {
+    background-color: #e0e0e0;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-40px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
